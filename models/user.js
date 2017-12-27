@@ -4,7 +4,8 @@ mongoose.connect(config.mongodb);
 
 var UserSchema = mongoose.Schema({
   uid: Number,
-  name: String,
+  username: String,
+  password: String,
   createTime: Date,
   lastTime: Date,
 });
