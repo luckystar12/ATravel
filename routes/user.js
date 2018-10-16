@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
+var jwt = require('jsonwebtoken');
 
 var mongoose = require('mongoose');
 var User = require('../models/user');
@@ -43,8 +44,29 @@ var User = require('../models/user');
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
-  console.log('欢迎访问路由/user/');
-  res.send('欢迎访问路由/user/');
+  console.log('------> Welcome to access url /user/ - get');
+  
+  var token = req.headers['x-access-token'];
+
+  if (token) {
+    try {
+        var decoded = jwt.verify(token, 'shhhhh');
+        var id = decoded.foo;
+
+        User.findById(id).then((result)=>{
+          console.log('user:', result)
+          var _result = [];
+          _result.push(result);
+          res.send({code: 0, result: _result});
+        });
+    } catch (err) {
+        console.log('err:', err);
+        return next()
+    }
+  } else {
+      next()
+  }
+
 });
 
 router.get('/test', function(req, res, next) {
